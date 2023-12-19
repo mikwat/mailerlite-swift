@@ -83,6 +83,7 @@ final class MailerLiteApiClientTests: XCTestCase {
             case .success(let response):
                 XCTAssertEqual(response.data?.count, 1)
                 XCTAssertEqual(response.data?.first?.email, "dummy@example.com")
+                XCTAssertNotNil(response.meta?.nextCursor)
             case .failure(let error):
                 XCTFail("Error was not expected: \(error)")
             }
@@ -117,7 +118,7 @@ final class MailerLiteApiClientTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
     
-    func testUpsertSubscribers() {
+    func testUpsertSubscribersSuccess() {
         let jsonString = """
             {
               "data": {

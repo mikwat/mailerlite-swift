@@ -24,9 +24,7 @@ public struct ListSubscribers: APIRequest {
     }
 }
 
-public struct ListSubscribersResponse: APIResponse, Decodable {
-    public var message: String?
-    
+public struct ListSubscribersResponse: Decodable {
     public let data: [Subscriber]?
     public let links: Links?
     public let meta: Meta?

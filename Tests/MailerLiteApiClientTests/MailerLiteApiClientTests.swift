@@ -96,7 +96,7 @@ final class MailerLiteApiClientTests: XCTestCase {
         let data = Data()
         let apiURL = URL(string: "https://connect.mailerlite.com/api/subscribers?")!
         MockURLProtocol.requestHandler = { request in
-            let response = HTTPURLResponse(url: apiURL, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            let response = HTTPURLResponse(url: apiURL, statusCode: 500, httpVersion: nil, headerFields: nil)!
             return (response, data)
         }
         
@@ -105,13 +105,13 @@ final class MailerLiteApiClientTests: XCTestCase {
             case .success(_):
                 XCTFail("Success was not expected.")
             case .failure(let error):
-                guard let error = error as? APIClientError else {
+                guard let error = error as? DecodingError else {
                     XCTFail("Incorrect error received.")
                     self.expectation.fulfill()
                     return
                 }
                 
-                XCTAssertEqual(error, APIClientError.parsing, "Parsing error was expected")
+                XCTAssertEqual(error.localizedDescription, "The data couldn’t be read because it isn’t in the correct format.")
             }
             self.expectation.fulfill()
         }
@@ -152,7 +152,6 @@ final class MailerLiteApiClientTests: XCTestCase {
               }
             }
         """
-        
         let data = jsonString.data(using: .utf8)
         let apiURL = URL(string: "https://connect.mailerlite.com/api/subscribers")!
         MockURLProtocol.requestHandler = { request in
@@ -172,6 +171,49 @@ final class MailerLiteApiClientTests: XCTestCase {
                 XCTAssertEqual(response.data?.fields?.lastName, "Testerson")
             case .failure(let error):
                 XCTFail("Error was not expected: \(error)")
+            }
+            self.expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+    
+    func testUpsertSubscribersFailure() {
+        let jsonString = """
+            {
+              "message": "The given data was invalid.",
+               "errors": {
+                 "email": ["The email must be a valid email address."]
+               }
+            }
+        """
+        let data = jsonString.data(using: .utf8)
+        let apiURL = URL(string: "https://connect.mailerlite.com/api/subscribers")!
+        MockURLProtocol.requestHandler = { request in
+            guard let url = request.url, url == apiURL else {
+                throw APIResponseError.request
+            }
+            
+            let response = HTTPURLResponse(url: apiURL, statusCode: 422, httpVersion: nil, headerFields: nil)!
+            return (response, data)
+        }
+        
+        apiClient.send(UpsertSubscriber(email: "dummy.example.com")) { result in
+            switch result {
+            case .success(let response):
+                XCTFail("Success was not expected: \(response)")
+            case .failure(let error):
+                guard let apiError = error as? APIClientError else {
+                    XCTFail("Incorrect error received.")
+                    self.expectation.fulfill()
+                    return
+                }
+                
+                switch apiError {
+                case .response(let response):
+                    XCTAssertEqual(response.message, "The given data was invalid.")
+                default:
+                    XCTFail("Incorrect error received.")
+                }
             }
             self.expectation.fulfill()
         }

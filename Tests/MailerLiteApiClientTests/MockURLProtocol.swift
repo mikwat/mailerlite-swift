@@ -43,3 +43,7 @@ class MockURLProtocol: URLProtocol {
         // This is called if the request gets canceled or completed.
     }
 }
+
+enum MockAPIError: Error {
+    case request
+}

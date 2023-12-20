@@ -49,7 +49,7 @@ public class MailerLiteAPIClient: APIClient {
                         completion(.failure(APIClientError.response(apiErrorResponse)))
                     }
                 } catch {
-                    completion(.failure(error))
+                    completion(.failure(APIClientError.parsing(error)))
                 }
             } else {
                 completion(.failure(APIClientError.unknownResponse))

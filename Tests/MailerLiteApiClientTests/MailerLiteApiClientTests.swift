@@ -105,13 +105,18 @@ final class MailerLiteApiClientTests: XCTestCase {
             case .success(_):
                 XCTFail("Success was not expected.")
             case .failure(let error):
-                guard let error = error as? DecodingError else {
+                guard let apiError = error as? APIClientError else {
                     XCTFail("Incorrect error received.")
                     self.expectation.fulfill()
                     return
                 }
                 
-                XCTAssertEqual(error.localizedDescription, "The data couldn’t be read because it isn’t in the correct format.")
+                switch apiError {
+                case .parsing(let error):
+                    XCTAssertEqual(error.localizedDescription, "The data couldn’t be read because it isn’t in the correct format.")
+                default:
+                    XCTFail("Incorrect error received.")
+                }
             }
             self.expectation.fulfill()
         }

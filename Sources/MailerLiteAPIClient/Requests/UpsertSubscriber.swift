@@ -23,7 +23,7 @@ public struct UpsertSubscriber: APIRequest {
     public let optinIp: String?
     public let unsubscribedAt: String?
     
-    init(
+    public init(
         email: String? = nil,
         fields: Subscriber.Fields? = nil,
         groups: [String]? = nil,

@@ -17,7 +17,7 @@ public struct ListSubscribers: APIRequest {
     public let limit: Int?
     public let cursor: String?
     
-    init(filter: String? = nil, limit: Int? = nil, cursor: String? = nil) {
+    public init(filter: String? = nil, limit: Int? = nil, cursor: String? = nil) {
         self.filter = filter
         self.limit = limit
         self.cursor = cursor

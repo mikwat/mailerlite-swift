@@ -37,7 +37,7 @@ public struct Subscriber: Codable {
         public let state: String?
         public let zip: String?
         
-        init(
+        public init(
             city: String? = nil,
             company: String? = nil,
             country: String? = nil,

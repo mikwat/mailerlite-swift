@@ -26,7 +26,7 @@ public struct UpdateSubscriber: APIRequest {
     public let optinIp: String?
     public let unsubscribedAt: String?
     
-    init(
+    public init(
         id: String,
         fields: Subscriber.Fields? = nil,
         groups: [String]? = nil,

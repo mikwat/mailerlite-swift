@@ -22,7 +22,7 @@ public struct Group: Codable {
     public let junkCount: Int?
     public let createdAt: String?
     
-    init(
+    public init(
         id: String,
         name: String? = nil,
         activeCount: Int? = nil,

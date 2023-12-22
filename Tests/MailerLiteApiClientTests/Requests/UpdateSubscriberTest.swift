@@ -7,7 +7,7 @@
 
 import Foundation
 import XCTest
-@testable import MailerLiteApiClient
+@testable import MailerLiteAPIClient
 
 final class UpdateSubscriberTest: XCTestCase {
     var apiClient: MailerLiteAPIClient!

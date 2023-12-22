@@ -6,7 +6,7 @@ A basic Swift SDK for the [MailerLite API](https://developers.mailerlite.com/doc
 
 ### Get a list of subscribers
 ```swift
-import MailerLiteApiClient
+import MailerLiteAPIClient
 
 let mailerLite = MailerLiteAPIClient(apiKey: "your-api-key")
 
@@ -25,7 +25,7 @@ mailerLite.send(ListSubscribers()) { result in
 
 ### Upsert a subscriber
 ```swift
-import MailerLiteApiClient
+import MailerLiteAPIClient
 
 let mailerLite = MailerLiteAPIClient(apiKey: "your-api-key")
 
@@ -44,7 +44,7 @@ mailerLite.send(UpsertSubscriber(email: "dummy@example.com", fields: Subscriber.
 
 ### Update a subscriber
 ```swift
-import MailerLiteApiClient
+import MailerLiteAPIClient
 
 let mailerLite = MailerLiteAPIClient(apiKey: "your-api-key")
 

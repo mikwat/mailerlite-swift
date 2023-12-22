@@ -2,6 +2,9 @@ MailerLite Swift SDK
 ====================
 A basic Swift SDK for the [MailerLite API](https://developers.mailerlite.com/docs/).
 
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmikwat%2Fmailerlite-swift%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/mikwat/mailerlite-swift)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmikwat%2Fmailerlite-swift%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/mikwat/mailerlite-swift)
+
 ## Usage
 
 ### Get a list of subscribers

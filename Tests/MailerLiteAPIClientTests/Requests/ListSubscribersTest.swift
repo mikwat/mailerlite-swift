@@ -23,7 +23,7 @@ final class ListSubscribersTest: XCTestCase {
         expectation = expectation(description: "Expectation")
     }
     
-    func testSuccess() {
+    func testSuccess() async {
         let jsonString = """
             {
               "data": [
@@ -82,21 +82,20 @@ final class ListSubscribersTest: XCTestCase {
             return (response, data)
         }
         
-        apiClient.send(ListSubscribers()) { result in
-            switch result {
-            case .success(let response):
-                XCTAssertEqual(response.data?.count, 1)
-                XCTAssertEqual(response.data?.first?.email, "dummy@example.com")
-                XCTAssertNotNil(response.meta?.nextCursor)
-            case .failure(let error):
-                XCTFail("Error was not expected: \(error)")
-            }
-            self.expectation.fulfill()
+        do {
+            let response = try await apiClient.send(ListSubscribers())
+            XCTAssertEqual(response.data?.count, 1)
+            XCTAssertEqual(response.data?.first?.email, "dummy@example.com")
+            XCTAssertNotNil(response.meta?.nextCursor)
+        } catch {
+            XCTFail("Error was not expected: \(error)")
         }
-        wait(for: [expectation], timeout: 1.0)
+        
+        self.expectation.fulfill()
+        await fulfillment(of: [expectation], timeout: 1.0)
     }
     
-    func testFailure() {
+    func testFailure() async {
         let data = Data()
         let apiURL = URL(string: "https://connect.mailerlite.com/api/subscribers?")!
         MockURLProtocol.requestHandler = { request in
@@ -104,26 +103,25 @@ final class ListSubscribersTest: XCTestCase {
             return (response, data)
         }
         
-        apiClient.send(ListSubscribers()) { result in
-            switch result {
-            case .success(_):
-                XCTFail("Success was not expected.")
-            case .failure(let error):
-                guard let apiError = error as? APIClientError else {
-                    XCTFail("Incorrect error received.")
-                    self.expectation.fulfill()
-                    return
-                }
-                
-                switch apiError {
-                case .parsing(let error):
-                    XCTAssertEqual(error.localizedDescription, "The data couldn’t be read because it isn’t in the correct format.")
-                default:
-                    XCTFail("Incorrect error received.")
-                }
+        do {
+            let _ = try await apiClient.send(ListSubscribers())
+            XCTFail("Success was not expected.")
+        } catch {
+            guard let apiError = error as? APIClientError else {
+                XCTFail("Incorrect error received.")
+                self.expectation.fulfill()
+                return
             }
-            self.expectation.fulfill()
+            
+            switch apiError {
+            case .parsing(let error):
+                XCTAssertEqual(error.localizedDescription, "The data couldn’t be read because it isn’t in the correct format.")
+            default:
+                XCTFail("Incorrect error received.")
+            }
         }
-        wait(for: [expectation], timeout: 1.0)
+        
+        self.expectation.fulfill()
+        await fulfillment(of: [expectation], timeout: 1.0)
     }
 }

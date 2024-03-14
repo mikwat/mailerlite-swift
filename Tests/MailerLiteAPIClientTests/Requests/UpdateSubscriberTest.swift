@@ -23,7 +23,7 @@ final class UpdateSubscriberTest: XCTestCase {
         expectation = expectation(description: "Expectation")
     }
     
-    func testSuccess() {
+    func testSuccess() async {
         let jsonString = """
             {
               "data": {
@@ -68,32 +68,31 @@ final class UpdateSubscriberTest: XCTestCase {
             return (response, data)
         }
         
-        apiClient.send(UpdateSubscriber(
-            id: "31897397363737859",
-            fields: Subscriber.Fields(
-                lastName: nil,
-                name: "Dummy"
-            ),
-            groups: [
-                "4243829086487936",
-                "14133878422767533",
-                "31985378335392975"
-            ]
-        )) { result in
-            switch result {
-            case .success(let response):
-                XCTAssertNotNil(response.data)
-                XCTAssertEqual(response.data?.email, "dummy@example.com")
-                XCTAssertEqual(response.data?.fields?.name, "Dummy")
-            case .failure(let error):
-                XCTFail("Error was not expected: \(error)")
-            }
-            self.expectation.fulfill()
+        do {
+            let response = try await apiClient.send(UpdateSubscriber(
+                id: "31897397363737859",
+                fields: Subscriber.Fields(
+                    lastName: nil,
+                    name: "Dummy"
+                ),
+                groups: [
+                    "4243829086487936",
+                    "14133878422767533",
+                    "31985378335392975"
+                ]
+            ))
+            XCTAssertNotNil(response.data)
+            XCTAssertEqual(response.data?.email, "dummy@example.com")
+            XCTAssertEqual(response.data?.fields?.name, "Dummy")
+        } catch {
+            XCTFail("Error was not expected: \(error)")
         }
-        wait(for: [expectation], timeout: 1.0)
+        
+        self.expectation.fulfill()
+        await fulfillment(of: [expectation], timeout: 1.0)
     }
     
-    func testFailure() {
+    func testFailure() async {
         let jsonString = """
             {
               "message": "The given data was invalid.",
@@ -113,37 +112,36 @@ final class UpdateSubscriberTest: XCTestCase {
             return (response, data)
         }
         
-        apiClient.send(UpdateSubscriber(
-            id: "31897397363737859",
-            fields: Subscriber.Fields(
-                lastName: nil,
-                name: "Dummy"
-            ),
-            groups: [
-                "4243829086487936",
-                "14133878422767533",
-                "31985378335392975"
-            ]
-        )) { result in
-            switch result {
-            case .success(let response):
-                XCTFail("Success was not expected: \(response)")
-            case .failure(let error):
-                guard let apiError = error as? APIClientError else {
-                    XCTFail("Incorrect error received.")
-                    self.expectation.fulfill()
-                    return
-                }
-                
-                switch apiError {
-                case .response(let response):
-                    XCTAssertEqual(response.message, "The given data was invalid.")
-                default:
-                    XCTFail("Incorrect error received.")
-                }
+        do {
+            let response = try await apiClient.send(UpdateSubscriber(
+                id: "31897397363737859",
+                fields: Subscriber.Fields(
+                    lastName: nil,
+                    name: "Dummy"
+                ),
+                groups: [
+                    "4243829086487936",
+                    "14133878422767533",
+                    "31985378335392975"
+                ]
+            ))
+            XCTFail("Success was not expected: \(response)")
+        } catch {
+            guard let apiError = error as? APIClientError else {
+                XCTFail("Incorrect error received.")
+                self.expectation.fulfill()
+                return
             }
-            self.expectation.fulfill()
+            
+            switch apiError {
+            case .response(let response):
+                XCTAssertEqual(response.message, "The given data was invalid.")
+            default:
+                XCTFail("Incorrect error received.")
+            }
         }
-        wait(for: [expectation], timeout: 1.0)
+        
+        self.expectation.fulfill()
+        await fulfillment(of: [expectation], timeout: 1.0)
     }
 }

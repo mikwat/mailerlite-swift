@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum APIClientError: Error, Equatable {
+enum APIClientError: Error, Equatable, Sendable {
     case decoding, encoding, unknownResponse
     case parsing(Error)
     case response(APIErrorResponse)

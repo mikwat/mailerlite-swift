@@ -14,7 +14,7 @@ import MailerLiteAPIClient
 let mailerLite = MailerLiteAPIClient(apiKey: "your-api-key")
 
 do {
-    let response = mailerLite.send(ListSubscribers())
+    let response = try await mailerLite.send(ListSubscribers())
     // TODO: handle response
     let data = response.data {
         print("Found \(data.count) subscribers")
@@ -31,7 +31,7 @@ import MailerLiteAPIClient
 let mailerLite = MailerLiteAPIClient(apiKey: "your-api-key")
 
 do {
-    let response = mailerLite.send(UpsertSubscriber(email: "dummy@example.com", fields: Subscriber.Fields(lastName: "Testerson")))
+    let response = try await mailerLite.send(UpsertSubscriber(email: "dummy@example.com", fields: Subscriber.Fields(lastName: "Testerson")))
     // TODO: handle response
     let data = response.data {
         print("Subscriber \(data.email) upserted")
@@ -49,7 +49,7 @@ import MailerLiteAPIClient
 let mailerLite = MailerLiteAPIClient(apiKey: "your-api-key")
 
 do {
-    let response = mailerLite.send(UpdateSubscriber(
+    let response = try await mailerLite.send(UpdateSubscriber(
         id: "31897397363737859",
         fields: Subscriber.Fields(
             lastName: nil,

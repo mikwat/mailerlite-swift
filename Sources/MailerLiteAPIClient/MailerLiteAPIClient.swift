@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class MailerLiteAPIClient: APIClient {
+public final class MailerLiteAPIClient: APIClient, Sendable {
     private let baseEndpointUrl = URL(string: "https://connect.mailerlite.com/api/")!
     private let urlSession: URLSession
     
